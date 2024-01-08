@@ -3,13 +3,13 @@ Welcome to the Data Management System powered by Bash/Shell scripting! This ligh
 
 ### Key Features:
 
-Automation: Leverage the power of Bash to automate repetitive data-related tasks, saving time and reducing the likelihood of errors.
-Flexibility: The system is designed to be highly adaptable, allowing users to tailor scripts to their specific data management needs.
-Script Modularity: Each aspect of data management is encapsulated in modular scripts, promoting code reusability and maintainability.
-Command-Line Interface (CLI): Enjoy the convenience of a command-line interface for quick and straightforward interaction with the system.
-Data Processing: Perform various data processing tasks, such as cleaning, transformation, and validation, using Bash scripting's text processing capabilities.
-Data Backup and Restore: Implement reliable backup and restore mechanisms to safeguard your valuable data assets.
-Compatibility: The system is compatible with a wide range of Unix-based systems, ensuring consistent performance across different environments.
+* Automation: Leverage the power of Bash to automate repetitive data-related tasks, saving time and reducing the likelihood of errors.
+* Flexibility: The system is designed to be highly adaptable, allowing users to tailor scripts to their specific data management needs.
+* Script Modularity: Each aspect of data management is encapsulated in modular scripts, promoting code reusability and maintainability.
+* Command-Line Interface (CLI): Enjoy the convenience of a command-line interface for quick and straightforward interaction with the system.
+* Data Processing: Perform various data processing tasks, such as cleaning, transformation, and validation, using Bash scripting's text processing capabilities.
+* Data Backup and Restore: Implement reliable backup and restore mechanisms to safeguard your valuable data assets.
+* Compatibility: The system is compatible with a wide range of Unix-based systems, ensuring consistent performance across different environments.
 Getting Started:
 
 ### To dive into the world of efficient data management, follow these steps:
