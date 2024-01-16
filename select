@@ -1,0 +1,70 @@
+#!/bin/bash
+
+echo -e "List of Tables:"
+counter=1
+for file in *; do
+    if [ -f "$file" ] && [[ ! "$file" =~ _metadata$ ]]; then
+        echo -e "${COLOR_GREEN} $counter. $file ${COLOR_RESET}"
+        ((counter++))
+    fi
+done
+
+while true; do
+    read -p "Enter table name: " table
+
+    if [[ -f "$table" ]]; then
+        metadata_table="${table}_metadata"
+        number_of_fields=$(awk -F: 'NR==1 {print NF}' "$metadata_table")
+
+        select sub_operation in "Select All" "Select by column" "Select with value" "Back to operations"; do
+            case $REPLY in
+            1)
+                 awk -F: 'NR==1 {print "$0"}' "$metadata_table"
+                cat "$table"
+                ;;
+            2)
+
+		 while true; do
+                    awk -F: 'NR==1 {for(i=1; i<=NF; i++) print i, $i}' "$metadata_table"
+                    read -p "Here are your columns, Please choose column number: " column_number
+                    if [[ $column_number -gt $number_of_fields || $column_number -lt 0 ]]; then
+                        echo "Please enter a column number between 1:$number_of_fields"
+                    else
+			awk -F: 'NR==1 {print $'$column_number'}' "$metadata_table"
+                        awk -F: '{print $'$column_number'}' "$table"
+                        break 
+                    fi
+                done
+                ;;
+            3)
+                while true; do
+                    awk -F: 'NR==1 {for(i=1; i<=NF; i++) print i, $i}' "$metadata_table"
+                    read -p "Here are your columns, Please choose column number: " column_number
+                    read -p "Enter the value you are searching for: " value
+                    if [[ $column_number -gt $number_of_fields || $column_number -lt 0 ]]; then
+                        echo "Please enter a column number between 1:$number_of_fields"
+                    else
+                        awk 'NR==1 {print $0}' "$metadata_table"
+                        awk -F: -v col_num="$column_number" -v search_value="$value" '{
+                          if ($col_num == search_value) {
+                            print $0
+                          }
+                        }' "$table"
+                        break
+                    fi
+                done
+                ;;
+            4)
+                break
+                ;;
+            *)
+                echo "Please choose an option from the list"
+                ;;
+            esac
+        done
+    else
+        echo "Table does not exist"
+    fi
+break
+done
+

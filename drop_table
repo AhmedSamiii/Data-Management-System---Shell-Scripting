@@ -1,0 +1,17 @@
+#!/bin/bash
+			while true; do
+				# Take the table name from the user
+				read -p "Enter the name of a table you want to delete: " tableName
+
+				# Remove/delete the table
+				rm "$tableName"
+
+				# Check if the table is deleted or not
+				if [ $? -eq 0 ]; then
+					echo -e "Table successfully deleted.\n"
+					rm  "${tableName}_metadata"
+					break
+				else
+					echo -e "Failed to delete the table\nPlease make sure of the table name.\n"
+				fi
+			done
