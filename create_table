@@ -1,0 +1,114 @@
+#!/bin/bash
+allowed_pattern='^[a-zA-Z][a-zA-Z0-9]*$'
+column_names=()
+data_types=()
+constrains=()
+
+while true; do
+    read -p "Enter the table name: " tableName
+
+    if [ -e "$tableName" ]; then
+        echo -e "This table name already exists\nPlease try using another name.\n"
+        continue
+    elif [[ $tableName == *" "* ]]; then
+        echo -e "The table name should not contain any spaces\nPlease, re-enter it again\n"
+        continue
+    elif [[ ! $tableName =~ $allowed_pattern ]]; then
+        echo -e "The table name should not contain any special characters\nPlease re-enter it\n"
+        continue
+    else
+        if [ -f "$tableName" ]; then
+            echo -e "Table name already exists\n"
+        else
+            touch "$tableName"
+            touch "${tableName}_metadata"
+        fi
+	
+	while true; do 
+	    read -p "How many fields do you want in this table? " fieldsNumber
+	    if [[ ! "$fieldsNumber" =~ ^[0-9]*$ ]]; then
+		echo "Please enter a number!"
+		continue 
+	    else
+		break
+	    fi
+	done
+
+        echo -e "\n"
+        outputFile="${tableName}_metadata"
+
+        isPrimaryKeyChosen=false
+
+        for num in $(seq 1 $fieldsNumber); do
+            while true; do
+                read -p "Enter the field-${num} name: " fieldName
+
+                # Check for spaces or special characters
+                if [[ $fieldName == *" "* || ! $fieldName =~ $allowed_pattern ]]; then
+                    echo -e "Field name should not contain spaces or special characters\nPlease re-enter it\n"
+                elif [[ " ${column_names[@]} " =~ " $fieldName " ]]; then
+                    echo -e "Field name already exists\nPlease choose a different name\n"
+                else
+                    column_names+=("$fieldName")
+                    break
+                fi
+            done
+
+            if [[ $isPrimaryKeyChosen == false ]]; then
+                #PS3="Select field-${num} constrains: "
+                echo -e "Select field-${num} constrains: "
+                options=("pk" "unique" "notnull")
+                select fieldConstrains in "${options[@]}"; do
+                    case $fieldConstrains in
+                        "pk")
+                            constrains+=("$fieldConstrains")
+                            isPrimaryKeyChosen=true
+                            break
+                            ;;
+                        "unique"|"notnull")
+                            constrains+=("$fieldConstrains")
+                            break
+                            ;;
+                        *) echo "Invalid option";;
+                    esac
+                done
+            else
+                # If the primary key is already chosen, only allow "unique" and "notnull" as constraints
+                #PS3="Select field-${num} constrains: "
+                echo -e "Select field-${num} constrains: "
+                options=("unique" "notnull")
+                select fieldConstrains in "${options[@]}"; do
+                    case $fieldConstrains in
+                        "unique"|"notnull")
+                            constrains+=("$fieldConstrains")
+                            break
+                            ;;
+                        *) echo "Invalid option";;
+                    esac
+                done
+            fi
+
+            #PS3="Select field-${num} data type: "
+            echo -e "Select field-${num} data type: "
+            options=("int" "string")
+            select fieldDataType in "${options[@]}"; do
+                case $fieldDataType in
+                    "int"|"string")
+                        data_types+=("$fieldDataType")
+                        break
+                        ;;
+                    *) echo "Invalid option";;
+                esac
+            done
+
+            echo -e "\n"
+        done
+
+        echo "${column_names[*]}" | tr ' ' ':' >> "$outputFile"
+        echo "${data_types[*]}" | tr ' ' ':' >> "$outputFile"
+        echo "${constrains[*]}" | tr ' ' ':' >> "$outputFile"
+        echo -e "The table is created successfully ^_^\n"
+        break
+    fi
+    break
+done

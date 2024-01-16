@@ -1,0 +1,89 @@
+#!/bin/bash
+echo -e "List of Tables:"
+counter=1
+for file in *; do
+    if [ -f "$file" ] && [[ ! "$file" =~ _metadata$ ]]; then
+        echo -e "$counter. $file "
+        ((counter++))
+    fi
+done
+
+		while true; do
+		    read -p "Enter table name: " table
+
+		    if [[ -f "$table" ]]; then
+			metadata_table="${table}_metadata"
+			number_of_fields=$(awk -F: 'NR==1 {print NF}' "$metadata_table")
+			# echo -e "$number_of_fields"
+
+			select sub_operation in "Delete by row "  "Back to operations"; do
+         			case $REPLY in
+
+					1)
+						#awk -F: 'NR==1 {for(i=1; i<=NF; i++) print i, $i}' "$metadata_table"
+						PK_index=$(awk -F':' 'NR==3 {for(i=1; i<=NF; i++) if($i=="pk") print i}' "$metadata_table")
+						PK_column_name=$(awk -F: -v var="$PK_index" 'NR==1 {print $var}' "$metadata_table")
+
+						#read -p "Choose the column number to delete from: " column_number1	
+						#Target_column=$(awk -F: -v var="$column_number1" 'NR==1 {print $var}' "$metadata_table")
+						PK_datatype=$(awk -F: -v var="$column_number" 'NR==2 {print $var}' "$metadata_table")
+						#echo -e "PK indx = $PK_index, and its name is: $PK_column_name\nThe target column: $Target_column"
+
+						while true; do 
+
+						    read -p "where [PK] $PK_column_name = " match_value
+						    if [[ "$PK_datatype" == "string" && ! "$match_value" =~ ^[a-zA-Z]*$ ]]; then
+							    echo "Please enter a $PK_datatype value free of special characters and spaces !"
+						    continue 
+						# Check if datatype is integer
+						    elif [[ "$PK_datatype" == "int" && ! "$match_value" =~ ^[0-9]*$ ]]; then
+							    echo "Please enter a $PK_datatype value free of special characters and spaces !"
+							    continue	
+							fi
+						
+						flag1=$(awk -F: -v col_num="$PK_index" -v search_value="$match_value" '
+						    BEGIN {
+							flag="false"
+						    }
+						    {
+							if ($col_num == search_value) {
+							    flag="true"
+							    exit
+							}
+						    }
+						    END {
+							print flag
+						    }' "$table")
+						echo "$flag1"
+
+						if [[ "$flag1" == "false" ]]; then
+						echo " this value is not exist,Please renter "
+						continue
+						else 
+							awk -F: -v col_num="$PK_index" -v col_value="$match_value" '{
+							    if ($col_num != col_value) {
+								print $0;
+							    }
+							}' "$table" > "$table.tmp"
+
+							mv "$table.tmp" "$table"
+
+							echo -e "Row where column $column_number is $match_value have been deleted from $table\n"
+							break
+
+						fi
+						    done 
+
+						break ;;
+
+					*)
+						echo "Others";;
+				esac
+				done
+		    else
+        echo "Table does not exist"
+	continue
+		    fi 
+    break
+done
+
