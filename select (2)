@@ -11,6 +11,7 @@ done
 
 while true; do
     read -p "Enter table name: " table
+	valid_values=() 
 
     if [[ -f "$table" ]]; then
         metadata_table="${table}_metadata"
