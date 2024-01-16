@@ -6,6 +6,7 @@ Welcome to the Data Management System powered by Bash/Shell scripting! This ligh
 * DataBase --> A Directory
 * Tables --> A File
 * Rows $ Columns --> Are the data inside the file
+  
 ![A DataBase Hirarchy](https://database.guide/wp-content/uploads/2016/06/Relational-Database-Structure-Example-1.png)
 
 ### Key Features:
