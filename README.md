@@ -14,7 +14,7 @@ Welcome to the Data Management System powered by Bash/Shell scripting! This ligh
 
 
 ## How To Run The Project:
-Execute `dbe` file
+Execute `main` file
 
 Contribute:
 If you have ideas for improvements or additional features, we welcome contributions. Feel free to submit pull requests and help enhance the Data Management System for everyone.
