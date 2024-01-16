@@ -13,7 +13,7 @@ Welcome to the Data Management System powered by Bash/Shell scripting! This ligh
 
 
 
-How To Run The Project:
+## How To Run The Project:
 Execute `dbe` file
 
 Contribute:
